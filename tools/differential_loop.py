@@ -91,7 +91,9 @@ def checker_rejects(bin_path, hy_path, expected_rule):
             [bin_path, "check", hy_path, "--json"],
             capture_output=True, timeout=60,
         )
-    except (OSError, subprocess.TimeoutExpired) as exc:
+    except subprocess.TimeoutExpired as exc:
+        return False, f"checker timed out after {exc.timeout}s"
+    except OSError as exc:
         return False, f"checker could not be run: {exc}"
     if proc.returncode not in (0, 1):
         detail = f"unexpected checker exit {proc.returncode}"
@@ -179,18 +181,24 @@ def documented_runtime_hazard(stderr, hazards):
 
 def build_and_run(bin_path, hy_path, workdir, hazards=()):
     """Full pipeline: hyb build + run the binary. Returns (ok, detail)."""
-    build = subprocess.run(
-        [bin_path, "build", hy_path],
-        cwd=workdir, capture_output=True, text=True, timeout=300,
-    )
+    try:
+        build = subprocess.run(
+            [bin_path, "build", hy_path],
+            cwd=workdir, capture_output=True, text=True, timeout=300,
+        )
+    except subprocess.TimeoutExpired as exc:
+        return False, f"build timed out after {exc.timeout}s"
     if build.returncode != 0:
         return False, "build failed: " + (build.stderr or build.stdout).strip()[-300:]
     binary = os.path.join(workdir, "a.out")
     if not os.path.exists(binary):
         return False, "no a.out produced"
-    run = subprocess.run(
-        [binary], cwd=workdir, capture_output=True, text=True, timeout=60
-    )
+    try:
+        run = subprocess.run(
+            [binary], cwd=workdir, capture_output=True, text=True, timeout=60
+        )
+    except subprocess.TimeoutExpired as exc:
+        return False, f"run timed out after {exc.timeout}s"
     if run.returncode != 0:
         # A Go fatal normally exits 2; GOTRACEBACK=crash aborts on Unix.
         # Matching text must not hide a different exit or a killed process.

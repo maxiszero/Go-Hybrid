@@ -8,3 +8,4 @@
 - **Const stack CLOSED:** #524's rework (float-zero divisors reject in const context only) twin-verified vs go build; #510/#515/#518/#520/#526/#528/#530/#539/#522 wave fully verified
 - CI quota healthy; local main == origin/main (28754ab); registration guard green (29 files/25 patterns)
 - Next queue: newer arrivals >#336 (#599 #598 #595 #594 #592 #591 #590 #588 #587 #584 #581 #580 #578 #571 #568 #564 #563 #561 #559 #543 #540 #512 #501 #494 #488 #480 #479 #476 #474 #469 #468 #454 #453 #452 #451 #444 #442 #441 #440 #439 #437 #436 #434 #407 #402 #389 #386 #373 #363 minus wildcard holds #577/#572/#569/#566/#556/#545/#516/#505/#488/#480/#474/#464/#452/#405/#384/#381/#370/#379/#507/#412/#336); M1 verdicts post 2026-11-01; drafts #317/#328/#331 stay with authors
+- Contributor PR #468 refresh: integrated main `0ca08c2`; focused Windows validation 12 passed / 2 POSIX skips. Native Linux CI and maintainer review pending at preparation.
